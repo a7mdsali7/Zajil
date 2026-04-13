@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>زاجل - أسعار العملات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--p:#09698d;--s:#1f94be;--bg:#f0f4f7;--card:#fff;--brd:#dde4ea;--up:#16a34a;--dn:#dc2626;--txt:#1a2b38;--mu:#6b8090;--sh:0 2px 16px rgba(9,105,141,.10);--dbg:linear-gradient(135deg,#e8f4f8,#d0e9f5);--dis:#fff8e7;--dib:#f5d76e;--dit:#7a5c00;--dtt:#5a4200;--hdr:linear-gradient(135deg,#09698d,#1f94be);--inp:#fff;--hov:#f5f9fc;--sp:linear-gradient(160deg,#09698d,#1f94be);}
+body.dark{--p:#1f94be;--s:#2ab0e0;--bg:#0d1821;--card:#162330;--brd:#1e3447;--txt:#e2edf4;--mu:#7fa0b5;--sh:0 2px 16px rgba(0,0,0,.35);--dbg:linear-gradient(135deg,#0f2535,#0d1e2e);--dis:#1a1500;--dib:#4a3a00;--dit:#c9a800;--dtt:#e0c000;--hdr:linear-gradient(135deg,#062535,#0d4a66);--inp:#0d1821;--hov:#1a2e3e;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;direction:rtl;transition:background .3s,color .3s;overflow-x:hidden}
+body.en{direction:ltr;font-family:'Inter',sans-serif}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;background:var(--sp);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .5s,transform .5s}
+#splash.hide{opacity:0;transform:scale(1.06);pointer-events:none}
+#splash img{width:88px;height:88px;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+#splash .sn{font-size:34px;font-weight:900;color:#fff;letter-spacing:-1px}
+#splash .ss{font-size:12px;color:rgba(255,255,255,.7);letter-spacing:1px}
+.sld{width:42px;height:4px;background:rgba(255,255,255,.22);border-radius:4px;overflow:hidden;margin-top:6px}
+.slb{height:100%;width:0;background:#fff;border-radius:4px;animation:sla 1.6s ease forwards}
+@keyframes sla{to{width:100%}}
+
+/* PTR */
+#ptr{height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--p);font-size:12px;font-weight:700;gap:7px;transition:height .2s}
+#ptr.active{height:48px}
+.pi{font-size:20px;transition:transform .3s}
+#ptr.ready .pi{transform:rotate(180deg)}
+
+/* HEADER */
+header{background:var(--hdr);padding:0 14px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 14px rgba(9,105,141,.28)}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.logo img{width:34px;height:34px;border-radius:8px;object-fit:cover}
+.lt{font-size:21px;font-weight:900;color:#fff;line-height:1}
+.lt small{display:block;font-size:9px;font-weight:400;color:rgba(255,255,255,.68);letter-spacing:.5px}
+.hbs{display:flex;gap:6px;align-items:center}
+.hb{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);color:#fff;padding:5px 11px;border-radius:17px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:background .2s}
+.hb:hover{background:rgba(255,255,255,.26)}
+
+/* MAIN */
+main{max-width:640px;margin:0 auto;padding:15px 12px 38px}
+
+/* DATE BAR */
+.db{background:var(--card);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;box-shadow:var(--sh);border:1px solid var(--brd);transition:background .3s,border .3s}
+.dt{font-size:12px;font-weight:700;color:var(--p)}
+.lu{font-size:11px;color:var(--mu)}
+
+/* DASHBOARD */
+.dw{overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s,margin .35s;max-height:420px;opacity:1;margin-bottom:14px}
+.dw.hidden{max-height:0;opacity:0;margin-bottom:0}
+.dc{background:var(--dbg);border:1.5px solid var(--s);border-radius:16px;padding:14px;position:relative;overflow:hidden;transition:border .3s}
+.dc::before{content:'';position:absolute;top:-18px;right:-18px;width:68px;height:68px;background:rgba(31,148,190,.07);border-radius:50%}
+body.en .dc::before{right:auto;left:-18px}
+.dtl{font-size:12px;font-weight:700;color:var(--p);margin-bottom:9px;display:flex;align-items:center;gap:5px}
+.ir{display:flex;gap:8px;align-items:center}
+.iw{flex:1;position:relative}
+.iw .fl{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:17px;pointer-events:none}
+body.en .iw .fl{right:auto;left:10px}
+.ui{width:100%;padding:9px 42px 9px 11px;border:1.5px solid var(--s);border-radius:10px;font-size:17px;font-weight:700;color:var(--p);background:var(--inp);outline:none;font-family:inherit;transition:border .2s,box-shadow .2s,background .3s}
+body.en .ui{padding:9px 11px 9px 42px}
+.ui:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(9,105,141,.11)}
+.ub{background:var(--p);color:#fff;border:none;border-radius:10px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s,transform .1s;white-space:nowrap}
+.ub:hover{background:var(--s)}.ub:active{transform:scale(.97)}
+.ovt{margin-top:9px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);cursor:pointer;user-select:none}
+.ovt input{accent-color:var(--p);width:13px;height:13px;cursor:pointer}
+#mov{overflow:hidden;transition:max-height .4s,opacity .3s;max-height:0;opacity:0}
+#mov.open{max-height:700px;opacity:1}
+.og{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+.oi{display:flex;flex-direction:column;gap:2px}
+.ol{font-size:10px;color:var(--mu);font-weight:600}
+.ov{padding:6px 7px;border:1px solid var(--brd);border-radius:8px;font-size:12px;font-weight:700;color:var(--p);background:var(--inp);outline:none;font-family:inherit;width:100%;transition:border .2s,background .3s}
+.ov:focus{border-color:var(--s)}
+.as{margin-top:7px;font-size:11px;color:var(--mu);display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:#ccc;display:inline-block;flex-shrink:0}
+.dot.g{background:var(--up)}.dot.o{background:#f59e0b}
+
+/* TABLE */
+.tc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--sh);border:1px solid var(--brd);margin-bottom:12px;transition:background .3s,border .3s}
+.th2{background:var(--p);padding:10px 13px;display:grid;grid-template-columns:1fr 60px 108px;gap:5px;align-items:center}
+.th{color:rgba(255,255,255,.85);font-size:11px;font-weight:600}
+.th.c{text-align:center}.th.e{text-align:left}
+body.en .th.e{text-align:right}
+.cr{display:grid;grid-template-columns:1fr 60px 108px;gap:5px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--brd);transition:background .15s}
+.cr:last-child{border-bottom:none}.cr:hover{background:var(--hov)}
+.ci{display:flex;align-items:center;gap:8px}
+.fb{width:33px;height:33px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg);flex-shrink:0}
+.cn{font-size:13px;font-weight:700;color:var(--txt)}
+.cc{font-size:10px;color:var(--mu)}
+.ind{display:flex;align-items:center;justify-content:center}
+.ii{text-align:center}
+.ar{font-size:16px;font-weight:900;line-height:1}
+.ar.up{color:var(--up)}.ar.dn{color:var(--dn)}.ar.nt{color:var(--mu);font-size:13px}
+.pt{font-size:9px;font-weight:700;display:block;margin-top:1px}
+.pt.up{color:var(--up)}.pt.dn{color:var(--dn)}
+.pc{display:flex;align-items:center;justify-content:flex-start;gap:5px}
+body.en .pc{justify-content:flex-end}
+.ps{font-size:14px;font-weight:800;color:var(--p);direction:ltr}
+.ps.ld{color:var(--mu);font-size:11px;font-weight:400}
+.cb{background:none;border:none;cursor:pointer;color:var(--mu);font-size:12px;padding:2px;line-height:1;transition:color .2s;flex-shrink:0;opacity:.55}
+.cb:hover{color:var(--p);opacity:1}
+
+/* HISTORY */
+.hc{background:var(--card);border-radius:16px;padding:13px;box-shadow:var(--sh);border:1px solid var(--brd);margin-bottom:12px;transition:background .3s,border .3s}
+.ht{font-size:13px;font-weight:700;color:var(--p);margin-bottom:9px;display:flex;align-items:center;justify-content:space-between}
+.ht span{display:flex;align-items:center;gap:4px}
+.clh{font-size:10px;color:var(--mu);cursor:pointer;padding:3px 8px;border:1px solid var(--brd);border-radius:10px;background:none;font-family:inherit;transition:color .2s,border .2s}
+.clh:hover{color:var(--dn);border-color:var(--dn)}
+.htbl{width:100%;border-collapse:collapse;font-size:11px}
+.htbl th{color:var(--mu);font-weight:600;padding:4px 5px;border-bottom:1px solid var(--brd);text-align:right}
+body.en .htbl th{text-align:left}
+.htbl td{padding:5px 5px;border-bottom:1px solid var(--brd);color:var(--txt)}
+.htbl tr:last-child td{border-bottom:none}
+.husd{font-weight:700;color:var(--p);direction:ltr;text-align:left}
+body.en .husd{text-align:right}
+.noH{text-align:center;color:var(--mu);font-size:12px;padding:13px}
+
+/* CALCULATOR */
+.cac{background:var(--card);border-radius:16px;padding:13px;box-shadow:var(--sh);border:1px solid var(--brd);margin-bottom:12px;transition:background .3s,border .3s}
+.cat{font-size:13px;font-weight:700;color:var(--p);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.car{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.cai{flex:1;min-width:80px;padding:8px 9px;border:1.5px solid var(--brd);border-radius:10px;font-size:15px;font-weight:700;color:var(--txt);background:var(--inp);outline:none;font-family:inherit;transition:border .2s,background .3s}
+.cai:focus{border-color:var(--s)}
+.csl{padding:8px 9px;border:1.5px solid var(--brd);border-radius:10px;font-size:12px;font-weight:600;color:var(--txt);background:var(--inp);outline:none;font-family:inherit;cursor:pointer;transition:border .2s,background .3s;min-width:82px}
+.csl:focus{border-color:var(--s)}
+.csw{font-size:19px;color:var(--p);cursor:pointer;flex-shrink:0;transition:transform .2s;padding:2px}
+.csw:hover{transform:scale(1.18)}
+.cres{margin-top:9px;background:var(--bg);border-radius:10px;padding:9px 13px;font-size:14px;font-weight:800;color:var(--p);text-align:center;direction:ltr;min-height:38px;display:flex;align-items:center;justify-content:center;transition:background .3s}
+
+/* DISCLAIMER */
+.disc{background:var(--dis);border:1px solid var(--dib);border-radius:12px;padding:11px 13px;font-size:11px;color:var(--dit);line-height:1.9;transition:background .3s,border .3s}
+.dtt{font-weight:700;font-size:12px;color:var(--dtt);margin-bottom:4px;display:flex;align-items:center;gap:4px}
+footer{text-align:center;padding:15px;font-size:10px;color:var(--mu)}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(68px);background:var(--p);color:#fff;padding:9px 20px;border-radius:22px;font-size:12px;font-weight:700;box-shadow:0 4px 20px rgba(9,105,141,.38);transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:9000;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:8000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.mo.show{opacity:1;pointer-events:all}
+.mb{background:var(--card);border-radius:20px;padding:26px 22px;width:min(310px,90vw);box-shadow:0 8px 40px rgba(0,0,0,.22);text-align:center;transition:background .3s}
+.mtt{font-size:16px;font-weight:800;color:var(--p);margin-bottom:5px}
+.msb{font-size:12px;color:var(--mu);margin-bottom:16px}
+.mi{width:100%;padding:10px 13px;border:1.5px solid var(--brd);border-radius:10px;font-size:18px;font-weight:700;text-align:center;letter-spacing:4px;color:var(--txt);background:var(--inp);outline:none;font-family:inherit;transition:border .2s,background .3s}
+.mi:focus{border-color:var(--p)}
+.mbs{display:flex;gap:8px;margin-top:12px}
+.mbtn{flex:1;padding:10px;border-radius:10px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+.mbtn.ok{background:var(--p);color:#fff}.mbtn.ok:hover{background:var(--s)}
+.mbtn.cn{background:var(--brd);color:var(--txt)}
+.merr{font-size:11px;color:var(--dn);margin-top:7px;min-height:15px}
+
+/* ANIMATIONS */
+@keyframes plg{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
+.lp{animation:plg .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.fi{animation:fi .4s ease both}
+@media(max-width:380px){.th2,.cr{grid-template-columns:1fr 50px 94px}.ps{font-size:12px}}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="data:image/png;base64,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" alt="زاجل"/>
+  <div class="sn">زاجل</div>
+  <div class="ss">Zajil • أسعار السوق الموازي</div>
+  <div class="sld"><div class="slb"></div></div>
+</div>
+
+<!-- PTR -->
+<div id="ptr"><span class="pi">↓</span><span id="ptr-t">اسحب للتحديث</span></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" id="ltap">
+    <img src="data:image/png;base64,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" alt="زاجل"/>
+    <div class="lt">زاجل<small>Zajil</small></div>
+  </div>
+  <div class="hbs">
+    <button class="hb" onclick="toggleDark()" id="db2"><span id="di">🌙</span></button>
+    <button class="hb" onclick="toggleLang()" id="lb">ع/EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="db fi"><div class="dt" id="td2">…</div><div class="lu" id="lu2">—</div></div>
+
+  <!-- DASHBOARD -->
+  <div class="dw hidden" id="dw">
+    <div class="dc">
+      <div class="dtl">🔒 <span id="dtxt">لوحة التحكم — سعر الدولار بالسوق الموازي</span></div>
+      <div class="ir">
+        <div class="iw"><span class="fl">🇺🇸</span>
+          <input class="ui" type="number" id="ui" placeholder="مثال: 2300" min="0" step="1" inputmode="decimal"/>
+        </div>
+        <button class="ub" onclick="applyRate()" id="ub">تحديث</button>
+      </div>
+      <label class="ovt"><input type="checkbox" id="ovck" onchange="togOv()"/><span id="ovlb">تجاوز يدوي لأسعار محددة</span></label>
+      <div id="mov"><div class="og" id="og"></div></div>
+      <div class="as"><span class="dot" id="adot"></span><span id="atxt">جار جلب أسعار الصرف…</span></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="tc fi">
+    <div class="th2">
+      <div class="th" id="thc">العملة</div>
+      <div class="th c" id="thch">التغيير</div>
+      <div class="th e" id="thp">السعر (ج.س)</div>
+    </div>
+    <div id="cl"></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="hc fi">
+    <div class="ht"><span>📅 <span id="htt">سجل التحديثات</span></span>
+      <button class="clh" onclick="clrHist()" id="clhb">مسح</button>
+    </div>
+    <div id="hb2"></div>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div class="cac fi">
+    <div class="cat">🧮 <span id="catt">حاسبة التحويل السريع</span></div>
+    <div class="car">
+      <input class="cai" type="number" id="ca" placeholder="المبلغ" inputmode="decimal" oninput="calc()"/>
+      <select class="csl" id="cf" onchange="calc()"></select>
+      <span class="csw" onclick="swp()">⇄</span>
+      <select class="csl" id="ct" onchange="calc()"></select>
+    </div>
+    <div class="cres" id="cr">—</div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disc fi">
+    <div class="dtt" id="dtt2">⚠️ تنبيه هام</div>
+    <div id="dbd">
+      • الموقع يعرض الأسعار الاسترشادية للسوق الموازي فقط ولا يبيع عملات.<br>
+      • الأسعار للاستعلام والمتابعة وليست عرضاً تجارياً.<br>
+      • يُحسب سعر كل عملة بناءً على سعر الدولار المُدخل وأسعار الصرف العالمية.<br>
+      • لا يتحمل الموقع أي مسؤولية قانونية أو مالية ناجمة عن استخدام هذه البيانات.
+    </div>
+  </div>
+</main>
+<footer id="ft">© 2025 زاجل — أسعار السوق الموازي بالسودان</footer>
+<div class="toast" id="toast"></div>
+
+<!-- PASSWORD MODAL -->
+<div class="mo" id="mo">
+  <div class="mb">
+    <div class="mtt" id="mtt">🔐 كلمة المرور</div>
+    <div class="msb" id="msb">أدخل كلمة مرور لوحة التحكم</div>
+    <input class="mi" type="password" id="mi" maxlength="20" onkeydown="if(event.key==='Enter')okPwd()"/>
+    <div class="merr" id="merr"></div>
+    <div class="mbs">
+      <button class="mbtn ok" onclick="okPwd()" id="mok">دخول</button>
+      <button class="mbtn cn" onclick="clsMo()" id="mcn">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CUR=[
+  {c:'USD',ar:'الدولار الأمريكي', en:'US Dollar',       f:'🇺🇸'},
+  {c:'EUR',ar:'اليورو',           en:'Euro',             f:'🇪🇺'},
+  {c:'EGP',ar:'الجنيه المصري',    en:'Egyptian Pound',   f:'🇪🇬'},
+  {c:'SAR',ar:'الريال السعودي',   en:'Saudi Riyal',      f:'🇸🇦'},
+  {c:'QAR',ar:'الريال القطري',    en:'Qatari Riyal',     f:'🇶🇦'},
+  {c:'OMR',ar:'الريال العُماني',  en:'Omani Rial',       f:'🇴🇲'},
+  {c:'AED',ar:'الدرهم الإماراتي',en:'UAE Dirham',       f:'🇦🇪'},
+  {c:'MAD',ar:'الدرهم المغربي',   en:'Moroccan Dirham',  f:'🇲🇦'},
+  {c:'KWD',ar:'الدينار الكويتي',  en:'Kuwaiti Dinar',    f:'🇰🇼'},
+  {c:'BHD',ar:'الدينار البحريني', en:'Bahraini Dinar',   f:'🇧🇭'},
+  {c:'RWF',ar:'الفرنك الرواندي',  en:'Rwandan Franc',    f:'🇷🇼'},
+  {c:'ETB',ar:'البير الإثيوبي',   en:'Ethiopian Birr',   f:'🇪🇹'},
+];
+const PWD='zajil2025'; // ← غيّر كلمة المرور هنا
+const HK='zjh',UK='zju',OK='zjo',DK='zjd';
+let GR=null,UR=null,PP={},OV={},isAr=true,isDk=false;
+let tc=0,tt=null,dv=false,at=null;
+
+window.onload=()=>{
+  setTimeout(()=>{const s=document.getElementById('splash');s.classList.add('hide');setTimeout(()=>s.remove(),600);},1800);
+  if(localStorage.getItem(DK)==='1'){isDk=true;apDk();}
+  rDate();rRows();rCalcSel();fetchR();loadSaved();rHist();initPTR();
+  startAuto();
+  document.getElementById('ltap').addEventListener('click',onTap);
+};
+
+function startAuto(){clearInterval(at);at=setInterval(()=>{fetchR();showT(isAr?'🔄 تحديث تلقائي':'🔄 Auto-refresh');},3600000);}
+
+function initPTR(){
+  let sy=0,pl=false;
+  const p=document.getElementById('ptr');
+  document.addEventListener('touchstart',e=>{if(window.scrollY===0)sy=e.touches[0].clientY;});
+  document.addEventListener('touchmove',e=>{
+    if(!sy)return;const dy=e.touches[0].clientY-sy;
+    if(dy>10&&window.scrollY===0){pl=true;p.classList.add('active');p.classList.toggle('ready',dy>60);}
+  });
+  document.addEventListener('touchend',()=>{if(pl){p.classList.remove('active','ready');pl=false;sy=0;fetchR();showT(isAr?'🔄 جار التحديث…':'🔄 Refreshing…');}});
+}
+
+function onTap(){
+  tc++;const el=document.getElementById('ltap');
+  el.classList.remove('lp');void el.offsetWidth;el.classList.add('lp');
+  setTimeout(()=>el.classList.remove('lp'),260);
+  clearTimeout(tt);tt=setTimeout(()=>tc=0,1800);
+  if(tc>=5){tc=0;openMo();}
+}
+function openMo(){if(dv){togDash();return;}document.getElementById('mo').classList.add('show');document.getElementById('mi').value='';document.getElementById('merr').textContent='';setTimeout(()=>document.getElementById('mi').focus(),200);}
+function clsMo(){document.getElementById('mo').classList.remove('show');}
+function okPwd(){const v=document.getElementById('mi').value;if(v===PWD){clsMo();togDash();}else{document.getElementById('merr').textContent=isAr?'❌ كلمة المرور خاطئة':'❌ Wrong password';}}
+function togDash(){dv=!dv;document.getElementById('dw').classList.toggle('hidden',!dv);showT(dv?(isAr?'🔓 لوحة التحكم مفتوحة':'🔓 Unlocked'):(isAr?'🔒 لوحة التحكم مخفية':'🔒 Hidden'));}
+
+async function fetchR(){
+  setSt('l');
+  try{const r=await fetch('https://open.er-api.com/v6/latest/USD');const d=await r.json();if(d&&d.rates){GR=d.rates;setSt('ok');if(UR)comp();return;}throw 0;}
+  catch(e){try{const r2=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const d2=await r2.json();GR=d2.rates;setSt('ok');if(UR)comp();}catch(e2){setSt('e');}}
+}
+function setSt(s){
+  const d=document.getElementById('adot'),t=document.getElementById('atxt');
+  if(s==='ok'){d.className='dot g';t.textContent=isAr?'أسعار الصرف العالمية محدّثة ✓':'Global rates loaded ✓';}
+  else if(s==='l'){d.className='dot o';t.textContent=isAr?'جار جلب الأسعار…':'Fetching rates…';}
+  else{d.className='dot';t.textContent=isAr?'تعذّر التحميل.':'Failed.';}
+}
+
+function loadSaved(){
+  const s=localStorage.getItem(UK);if(s){document.getElementById('ui').value=s;UR=parseFloat(s);}
+  try{OV=JSON.parse(localStorage.getItem(OK)||'{}');}catch(e){OV={};}
+  rOvGrid();
+}
+function applyRate(){
+  const v=parseFloat(document.getElementById('ui').value);
+  if(!v||v<=0){showT(isAr?'أدخل سعراً صحيحاً':'Enter valid rate');return;}
+  if(!GR){showT(isAr?'جار التحميل…':'Loading…');return;}
+  UR=v;localStorage.setItem(UK,v);saveOv();comp();
+  const n=new Date();
+  document.getElementById('lu2').textContent=(isAr?'آخر تحديث: ':'Last update: ')+n.toLocaleTimeString(isAr?'ar-EG':'en-US');
+  addHist(v,n);rHist();calcConv();showT(isAr?'تم التحديث بنجاح ✓':'Updated ✓');
+}
+
+function togOv(){document.getElementById('mov').classList.toggle('open',document.getElementById('ovck').checked);}
+function rOvGrid(){
+  document.getElementById('og').innerHTML=CUR.map(c=>`
+    <div class="oi"><div class="ol">${c.f} ${isAr?c.ar:c.en}</div>
+    <input class="ov" type="number" id="ov-${c.c}" placeholder="${isAr?'تلقائي':'auto'}" value="${OV[c.c]||''}" oninput="onOv('${c.c}',this.value)"/></div>
+  `).join('');
+}
+function onOv(code,v){if(v&&parseFloat(v)>0)OV[code]=parseFloat(v);else delete OV[code];}
+function saveOv(){CUR.forEach(c=>{const e=document.getElementById('ov-'+c.c);if(e&&e.value&&parseFloat(e.value)>0)OV[c.c]=parseFloat(e.value);else if(e&&!e.value)delete OV[c.c];});localStorage.setItem(OK,JSON.stringify(OV));}
+
+function sdg(code){if(OV[code])return OV[code];if(!GR||!UR)return null;return UR/(GR[code]||1);}
+function comp(){
+  CUR.forEach(c=>{
+    const row=document.getElementById('r-'+c.c);if(!row)return;
+    const v=sdg(c.c),pv=PP[c.c]!=null?PP[c.c]:null,df=pv!==null?v-pv:0,pct=pv!==null&&pv!==0?((df/pv)*100).toFixed(2):null;
+    const pe=row.querySelector('.ps'),ae=row.querySelector('.ar'),xt=row.querySelector('.pt');
+    pe.classList.remove('ld');pe.textContent=fmt(v);
+    if(pv===null||df===0){ae.className='ar nt';ae.textContent='—';xt.textContent='';xt.className='pt';}
+    else if(df>0){ae.className='ar up';ae.textContent='↑';xt.className='pt up';xt.textContent='+'+pct+'%';}
+    else{ae.className='ar dn';ae.textContent='↓';xt.className='pt dn';xt.textContent=pct+'%';}
+    PP[c.c]=v;
+    const ob=row.querySelector('.ob');if(ob)ob.textContent=OV[c.c]?'✎':'';
+  });
+}
+function fmt(v){if(!v)return'—';if(v>=1000)return v.toLocaleString('en',{maximumFractionDigits:0})+' ج.س';if(v>=10)return v.toLocaleString('en',{maximumFractionDigits:1})+' ج.س';return v.toLocaleString('en',{maximumFractionDigits:3})+' ج.س';}
+
+function cpyP(code){
+  const v=sdg(code);if(!v){showT(isAr?'لا يوجد سعر':'No price');return;}
+  const c=CUR.find(x=>x.c===code),tx=`${c.f} ${isAr?c.ar:c.en}: ${fmt(v)}`;
+  navigator.clipboard.writeText(tx).then(()=>showT('✓ '+tx)).catch(()=>{const ta=document.createElement('textarea');ta.value=tx;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();showT('✓ '+tx);});
+}
+
+function addHist(u,d){let h=[];try{h=JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){}h.unshift({u,ts:d.toISOString()});if(h.length>10)h=h.slice(0,10);localStorage.setItem(HK,JSON.stringify(h));}
+function rHist(){
+  let h=[];try{h=JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){}
+  const b=document.getElementById('hb2');
+  if(!h.length){b.innerHTML=`<div class="noH">${isAr?'لا يوجد سجل بعد':'No history yet'}</div>`;return;}
+  b.innerHTML=`<table class="htbl"><tr><th>${isAr?'سعر الدولار':'USD Rate'}</th><th>${isAr?'التاريخ':'Date'}</th><th>${isAr?'الوقت':'Time'}</th></tr>
+    ${h.map(e=>{const d=new Date(e.ts);return`<tr><td class="husd">${Number(e.u).toLocaleString('en')} ج.س</td><td style="color:var(--mu)">${d.toLocaleDateString(isAr?'ar-EG':'en-US')}</td><td style="color:var(--mu);direction:ltr">${d.toLocaleTimeString(isAr?'ar-EG':'en-US',{hour:'2-digit',minute:'2-digit'})}</td></tr>`;}).join('')}
+  </table>`;
+}
+function clrHist(){localStorage.removeItem(HK);rHist();showT(isAr?'تم مسح السجل':'Cleared');}
+
+function rCalcSel(){const opts=['SDG',...CUR.map(c=>c.c)];['cf','ct'].forEach((id,i)=>{const s=document.getElementById(id);s.innerHTML=opts.map(o=>`<option value="${o}">${o}</option>`).join('');s.value=i===0?'USD':'SDG';});}
+function swp(){const f=document.getElementById('cf'),t=document.getElementById('ct');[f.value,t.value]=[t.value,f.value];calcConv();}
+function calcConv(){
+  const a=parseFloat(document.getElementById('ca').value),fr=document.getElementById('cf').value,to=document.getElementById('ct').value,res=document.getElementById('cr');
+  if(!a||isNaN(a)){res.textContent='—';return;}
+  const fs=fr==='SDG'?1:sdg(fr),ts=to==='SDG'?1:sdg(to);
+  if(!fs||!ts){res.textContent=isAr?'أدخل سعر الدولار أولاً':'Enter USD rate first';return;}
+  const rv=(a*fs)/ts,fc=CUR.find(x=>x.c===fr),tc2=CUR.find(x=>x.c===to);
+  res.textContent=`${fc?fc.f:'🇸🇩'} ${a.toLocaleString('en')} ${fr} = ${tc2?tc2.f:'🇸🇩'} ${rv.toLocaleString('en',{maximumFractionDigits:2})} ${to}`;
+}
+function calc(){calcConv();}
+
+function rRows(){
+  document.getElementById('cl').innerHTML=CUR.map(c=>`
+    <div class="cr" id="r-${c.c}">
+      <div class="ci"><div class="fb">${c.f}</div>
+        <div><div class="cn" data-ar="${c.ar}" data-en="${c.en}">${isAr?c.ar:c.en}</div>
+          <div class="cc">${c.c} <span class="ob" style="color:var(--s);font-size:9px"></span></div>
+        </div>
+      </div>
+      <div class="ind"><div class="ii"><div class="ar nt">—</div><span class="pt"></span></div></div>
+      <div class="pc">
+        <span class="ps ld">${isAr?'أدخل سعر':'Enter rate'}</span>
+        <button class="cb" onclick="cpyP('${c.c}')" title="${isAr?'نسخ':'Copy'}">📋</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function rDate(){document.getElementById('td2').textContent=new Date().toLocaleDateString(isAr?'ar-SD':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
+function toggleDark(){isDk=!isDk;apDk();localStorage.setItem(DK,isDk?'1':'0');}
+function apDk(){document.body.classList.toggle('dark',isDk);document.getElementById('di').textContent=isDk?'☀️':'🌙';}
+
+function toggleLang(){
+  isAr=!isAr;
+  document.documentElement.lang=isAr?'ar':'en';
+  document.documentElement.dir=isAr?'rtl':'ltr';
+  document.body.classList.toggle('en',!isAr);
+  document.getElementById('lb').textContent=isAr?'ع/EN':'EN/ع';
+  document.getElementById('dtxt').textContent=isAr?'لوحة التحكم — سعر الدولار بالسوق الموازي':'Dashboard — USD Parallel Market Rate';
+  document.getElementById('ui').placeholder=isAr?'مثال: 2300':'e.g. 2300';
+  document.getElementById('ub').textContent=isAr?'تحديث':'Update';
+  document.getElementById('ovlb').textContent=isAr?'تجاوز يدوي لأسعار محددة':'Manual price override';
+  document.getElementById('thc').textContent=isAr?'العملة':'Currency';
+  document.getElementById('thch').textContent=isAr?'التغيير':'Change';
+  document.getElementById('thp').textContent=isAr?'السعر (ج.س)':'Price (SDG)';
+  document.getElementById('htt').textContent=isAr?'سجل التحديثات':'Update History';
+  document.getElementById('clhb').textContent=isAr?'مسح':'Clear';
+  document.getElementById('catt').textContent=isAr?'حاسبة التحويل السريع':'Quick Converter';
+  document.getElementById('ca').placeholder=isAr?'المبلغ':'Amount';
+  document.getElementById('dtt2').textContent=isAr?'⚠️ تنبيه هام':'⚠️ Disclaimer';
+  document.getElementById('dbd').innerHTML=isAr
+    ?`• الموقع يعرض الأسعار الاسترشادية للسوق الموازي فقط ولا يبيع عملات.<br>• الأسعار للاستعلام والمتابعة وليست عرضاً تجارياً.<br>• يُحسب سعر كل عملة بناءً على سعر الدولار المُدخل وأسعار الصرف العالمية.<br>• لا يتحمل الموقع أي مسؤولية قانونية أو مالية ناجمة عن استخدام هذه البيانات.`
+    :`• This site displays parallel market reference rates only and does not sell currency.<br>• Prices are for informational purposes and do not constitute a commercial offer.<br>• Rates are calculated based on the entered USD rate and global cross rates.<br>• The site bears no legal or financial responsibility for use of this data.`;
+  document.getElementById('ft').textContent=isAr?'© 2025 زاجل — أسعار السوق الموازي بالسودان':'© 2025 Zajil — Sudan Parallel Market Rates';
+  document.getElementById('mtt').textContent=isAr?'🔐 كلمة المرور':'🔐 Password';
+  document.getElementById('msb').textContent=isAr?'أدخل كلمة مرور لوحة التحكم':'Enter dashboard password';
+  document.getElementById('mok').textContent=isAr?'دخول':'Enter';
+  document.getElementById('mcn').textContent=isAr?'إلغاء':'Cancel';
+  document.getElementById('ptr-t').textContent=isAr?'اسحب للتحديث':'Pull to refresh';
+  document.querySelectorAll('.cn').forEach(e=>e.textContent=isAr?e.dataset.ar:e.dataset.en);
+  document.querySelectorAll('.ps.ld').forEach(e=>e.textContent=isAr?'أدخل سعر':'Enter rate');
+  document.querySelectorAll('.cb').forEach(e=>e.title=isAr?'نسخ':'Copy');
+  rDate();rHist();rOvGrid();setSt(GR?'ok':'l');
+}
+
+let tt2=null;
+function showT(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt2);tt2=setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>
